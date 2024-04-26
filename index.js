@@ -62,8 +62,8 @@ app.get('/codeforces/:handle', async (req, res) => {
         const commitData = await dataStreak.json()
         res.status(200).send({
             success: commitData.rating ? true : false,
-            Rating: commitData.rating,
-            SCORE: Number(commitData.rating) * 2.5
+            Rating: commitData.rating === "Unrated" ? 0 : commitData.rating,
+            SCORE: Number(commitData.rating === "Unrated" ? 0 : commitData.rating) * 2.5
         });
     } catch (err) {
         res.send({ success: false, error: err });
