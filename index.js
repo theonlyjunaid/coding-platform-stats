@@ -10,7 +10,7 @@ app.get('/codechef/:handle', async (req, res) => {
         let dom = new JSDOM(data.data);
         let document = dom.window.document;
         res.status(200).send({
-            success: parseInt(document.querySelector(".rating-number").textContent) ? true : false,
+            success: document.querySelector(".rating-number").textContent ? true : false,
             // profile: document.querySelector('.user-details-container').children[0].children[0].src,
             // name: document.querySelector('.user-details-container').children[0].children[1].textContent,
             Rating: parseInt(document.querySelector(".rating-number").textContent),
