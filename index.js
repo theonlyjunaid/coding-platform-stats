@@ -153,6 +153,18 @@ app.get('/getdata', async (req, res) => {
         res.status(404).send({ success: false, error: err });
     }
 })
+app.get('/', async (req, res) => {
+    try {
+
+
+        res.status(200).send({
+            success: true,
+            "message": "use api /leetcode/<username>  ,/github/<username>,/geekforgeeks/<username> ,/codeforces/<username> ,/codechef/<username>  "
+        });
+    } catch (err) {
+        res.status(404).send({ success: false, error: err });
+    }
+})
 
 const PORT = process.env.PORT || 8800;
 app.listen(PORT);
