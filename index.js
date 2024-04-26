@@ -10,16 +10,17 @@ app.get('/codechef/:handle', async (req, res) => {
         let dom = new JSDOM(data.data);
         let document = dom.window.document;
         res.status(200).send({
-            success: true,
-            profile: document.querySelector('.user-details-container').children[0].children[0].src,
-            name: document.querySelector('.user-details-container').children[0].children[1].textContent,
-            currentRating: parseInt(document.querySelector(".rating-number").textContent),
-            highestRating: parseInt(document.querySelector(".rating-number").parentNode.children[4].textContent.split('Rating')[1]),
-            countryFlag: document.querySelector('.user-country-flag').src,
-            countryName: document.querySelector('.user-country-name').textContent,
-            globalRank: parseInt(document.querySelector('.rating-ranks').children[0].children[0].children[0].children[0].innerHTML),
-            countryRank: parseInt(document.querySelector('.rating-ranks').children[0].children[1].children[0].children[0].innerHTML),
-            stars: document.querySelector('.rating').textContent || "unrated",
+            success: parseInt(document.querySelector(".rating-number").textContent) ? true : false,
+            // profile: document.querySelector('.user-details-container').children[0].children[0].src,
+            // name: document.querySelector('.user-details-container').children[0].children[1].textContent,
+            Rating: parseInt(document.querySelector(".rating-number").textContent),
+            SCORE: parseInt(document.querySelector(".rating-number").textContent) * 2
+            // highestRating: parseInt(document.querySelector(".rating-number").parentNode.children[4].textContent.split('Rating')[1]),
+            // countryFlag: document.querySelector('.user-country-flag').src,
+            // countryName: document.querySelector('.user-country-name').textContent,
+            // globalRank: parseInt(document.querySelector('.rating-ranks').children[0].children[0].children[0].children[0].innerHTML),
+            // countryRank: parseInt(document.querySelector('.rating-ranks').children[0].children[1].children[0].children[0].innerHTML),
+            // stars: document.querySelector('.rating').textContent || "unrated",
         });
     } catch (err) {
         res.send({ success: false, error: err });
@@ -45,6 +46,7 @@ app.get('/github/:handle', async (req, res) => {
             }
             finalData.push(itemToPush)
         }
+
         res.status(200).send({
             success: true,
             profile: finalData,
@@ -55,13 +57,13 @@ app.get('/github/:handle', async (req, res) => {
 })
 app.get('/codeforces/:handle', async (req, res) => {
     try {
-        let data = await axios.get(`https://codeforces.com/profile/${req.params.handle}`);
-        let dom = new JSDOM(data.data);
-        let document = dom.window.document;
-        const items1 = document.getElementsByClassName("info")[0].children[1].children[0].textContent.trim().split(" ").pop().split(")")[0]
+
+        const dataStreak = await fetch(`https://codestats.onrender.com/api/codeforces/${req.params.handle}`)
+        const commitData = await dataStreak.json()
         res.status(200).send({
-            success: true,
-            Rating: Number(items1)
+            success: commitData.rating ? true : false,
+            Rating: commitData.rating,
+            SCORE: Number(commitData.rating) * 2.5
         });
     } catch (err) {
         res.send({ success: false, error: err });
@@ -73,7 +75,8 @@ app.get('/leetcode/:handle', async (req, res) => {
         const commitData = await dataStreak.json()
         res.status(200).send({
             success: true,
-            Rating: commitData
+            totalSolved: commitData.totalSolved,
+            SCORE: commitData.easySolved * 1 + commitData.mediumSolved * 2 + commitData.hardSolved * 3
         });
     } catch (err) {
         res.send({ success: false, error: err });
@@ -89,15 +92,14 @@ app.get('/geekforgeeks/:handle', async (req, res) => {
         const EASY = document.querySelector(".tabs.tabs-fixed-width.linksTypeProblem").children[2].textContent.split("(")[1].split(")")[0]
         const MEDIUM = document.querySelector(".tabs.tabs-fixed-width.linksTypeProblem").children[3].textContent.split("(")[1].split(")")[0]
         const HARD = document.querySelector(".tabs.tabs-fixed-width.linksTypeProblem").children[4].textContent.split("(")[1].split(")")[0]
-
-        console.log(SCHOOL)
         res.status(200).send({
             success: true,
             SCHOOL: Number(SCHOOL),
             BASIC: Number(BASIC),
             EASY: Number(EASY),
             MEDIUM: Number(MEDIUM),
-            HARD: Number(HARD)
+            HARD: Number(HARD),
+            SCORE: Number(SCHOOL) * 0 + Number(BASIC) * 0.5 + Number(EASY) * 0.75 + Number(MEDIUM) * 1.6 + Number(HARD) * 2.25
         });
     } catch (err) {
         res.status(404).send({ success: false, error: err });
