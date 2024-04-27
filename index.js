@@ -1,8 +1,12 @@
 const axios = require('axios');
 const jsdom = require("jsdom");
 const express = require('express')
+const cors = require('cors')
+
 const app = express();
 const { JSDOM } = jsdom;
+
+app.use(cors());
 
 app.get('/codechef/:handle', async (req, res) => {
     try {
